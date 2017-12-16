@@ -1,0 +1,230 @@
+{% extends 'AppBundle:Layout:base.html.twig' %}
+
+{% block stylesheets %}
+    <link href="{{ asset('bundles/app/assets/pages/css/profile-2.min.css')}}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('bundles/app/assets/pages/css/pricing.min.css')}}" rel="stylesheet" type="text/css" />
+    <style>
+        /**
+         * The CSS shown here will not be introduced in the Quickstart guide, but shows
+         * how you can use CSS to style your Element's container.
+         */
+        .StripeElement {
+            background-color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            border: 1px solid transparent;
+            box-shadow: 0 1px 3px 0 #e6ebf1;
+            -webkit-transition: box-shadow 150ms ease;
+            transition: box-shadow 150ms ease;
+        }
+
+        .StripeElement--focus {
+            box-shadow: 0 1px 3px 0 #cfd7df;
+        }
+
+        .StripeElement--invalid {
+            border-color: #fa755a;
+        }
+
+        .StripeElement--webkit-autofill {
+            background-color: #fefde5 !important;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    {% set hasActivieSubscription = is_granted("HAS_ACTIVE_SUBSCRIPTION") %}
+    <div class="page-content-wrapper">
+        <!-- BEGIN CONTENT BODY -->
+        <!-- BEGIN PAGE HEAD-->
+        <div class="page-head with-side-title">
+            <div class="container">
+                <div class="row">
+                    <!-- BEGIN PAGE TITLE -->
+                    <div class="page-title">
+                        <h1>Manage Account</h1>
+                    </div>
+                    <!-- END PAGE TITLE -->
+                </div>
+            </div>
+            <!-- END PAGE HEAD-->
+        </div>
+        <!-- BEGIN PAGE CONTENT BODY -->
+        <div class="page-content">
+            <div class="container">
+                <!-- BEGIN PAGE BREADCRUMBS -->
+                <ul class="page-breadcrumb breadcrumb">
+                    <li>
+                        <a href="{{path('dashboard_index')}}">Home</a>
+                        <i class="fa fa-circle"></i>
+                    </li>
+                    <li>
+                        <span>Manage Account</span>
+                    </li>
+                </ul>
+
+                <!-- END PAGE BREADCRUMBS -->
+                <!-- BEGIN PAGE CONTENT INNER -->
+                <div class="page-content-inner">
+                    <div id="mcb-user-profile">
+
+                        <div class="profile">
+                            <div class="">
+                                <div class="tabbable-line tabbable-custom-profile clearfix">
+                                    <ul class="nav nav-tabs user-manage-profile-tabs">
+                                        <li class="{% if hasActivieSubscription %}active{%endif%}"><a  class="uerInfoBtn {% if not hasActivieSubscription %}disabled-anchor{%endif%}" href="#tab_1_11" data-toggle="tab">User Info</a></li>
+                                            {% if is_granted('PLAN_SUBSCRIPTION_ABILITY') %}
+                                            <li class="{% if not hasActivieSubscription %}active{%endif%}"><a href="#tab_1_22" class="billingInfoBtn {% if not hasActivieSubscription %}disabled-anchor{%endif%}" data-toggle="tab" >Billing Info</a></li>
+                                            <li><a href="#tab_1_33" class="billingHistoryBtn {% if not hasActivieSubscription %}disabled-anchor{%endif%}" data-toggle="tab" >Billing History</a></li>
+                                            {% endif %}
+{#                                            {% if is_granted('FACEBOOK_LIVE_CHAT_ABILITY')  or is_granted('FACEBOOK_POST_ABILITY')  %}#}
+                                            <li><a href="#tab_1_44" class=" fb-integration-btn {% if not hasActivieSubscription %}disabled-anchor{%endif%}" data-toggle="tab">Integration</a></li>
+{#                                            {% endif %}#}
+                                            {% if not is_granted('ROLE_PREVIOUS_ADMIN') %}
+                                            <li><a href="#tab_1_55" class="assistentSection {% if not hasActivieSubscription %}disabled-anchor{%endif%}" data-toggle="tab">Assistant</a></li>
+                                            {% endif %}
+                                    </ul>
+                                    <div class="tab-content">
+                                        <!--tab-pane-->
+                                        <div class="tab-pane {% if hasActivieSubscription %}active{% endif %} editPersonalInfoModal" id="tab_1_11">
+                                            <div class="portlet-body">
+                                            </div>
+                                        </div>
+                                        {% if is_granted('PLAN_SUBSCRIPTION_ABILITY') %}
+                                            <!--tab-pane-->
+                                            <div class="tab-pane {% if not hasActivieSubscription %}active{% endif %} billing-info-container" id="tab_1_22">
+                                            </div>
+                                            <!--tab-pane-->
+                                            <div class="tab-pane billingHistoryModal" id="tab_1_33">
+                                                <div class="portlet-body">
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                        <!--tab-pane-->
+{#                                        {% if is_granted('FACEBOOK_LIVE_CHAT_ABILITY')  or is_granted('FACEBOOK_POST_ABILITY')  or is_granted('MANAGE_CALENDAR_ABILITY') %}#}
+                                            <div class="tab-pane" id="tab_1_44">
+                                                <div class="social-intg text-center">
+                                                    {% if is_granted('FACEBOOK_LIVE_CHAT_ABILITY')  or is_granted('FACEBOOK_POST_ABILITY')  %}
+                                                        <span class="facebook-intg ">
+                                                            <i class="fa fa-facebook"></i>
+                                                            <span class="facebookIntegrationWraper">
+                                                                {% if app.user.hasFBIntegration() %}
+                                                                    <i class="fa fa-check"></i>
+                                                                    Connected to Facebook
+                                                                    <button class="fb-play-btn" data-toggle="disconnectFacebook" data-original-title="Disconnect?">
+                                                                        <i class='fa fa-power-off '></i>
+                                                                    </button>
+                                                                {% else %}
+                                                                    {{ render(controller('AppBundle:FacebookLiveChat:login',{'page':'profile'})) }}
+                                                                {% endif %}
+                                                            </span>
+                                                        </span>
+                                                    {% endif %}
+                                                    {% if is_granted('MANAGE_CALENDAR_ABILITY') %}
+                                                        <span class="gmail-intg" >
+                                                            <i class="fa fa-calendar"></i>
+                                                            <span class="calendarIntegrationWraper">
+                                                                {% if app.user.hasGoogleCalendarIntegration( )%}
+                                                                    <i class="fa fa-check"></i> Connected to Google Calendar
+                                                                    <button class="google-play-btn" data-toggle="disconnectGoogleCalendar" data-original-title="Disconnect?">
+                                                                        <i class='fa fa-power-off '></i>
+                                                                    </button>
+                                                                {% else %}
+                                                                    {{ render(controller('AppBundle:GoogleCalendar:index',{'page':'profile'})) }}
+                                                                {% endif %}
+                                                            </span>
+                                                        </span>
+                                                    {% endif %}
+                                                    {#Gmail Integration#}
+                                                    <span class="gmail-intg" >
+                                                        <i class="fa fa-envelope"></i>
+                                                        <span class="gmailIntegrationWraper">
+                                                            {% if app.user.hasGoogleGmailIntegration( )%}
+                                                                <i class="fa fa-check"></i> Connected to Gmail
+                                                                <button class="google-play-btn" data-toggle="disconnectGoogleGmail" data-original-title="Disconnect?">
+                                                                    <i class='fa fa-power-off '></i>
+                                                                </button>
+                                                            {% else %}
+                                                                {{ render(controller('AppBundle:Script:loginGmail')) }}
+                                                            {% endif %}
+                                                        </span>
+                                                    </span>
+                                                        
+                                                </div>
+                                            </div>
+{#                                        {% endif %}#}
+                                        {% if not is_granted('ROLE_PREVIOUS_ADMIN') %}
+                                            <!--tab-pane-->
+                                            <div class="tab-pane assistentTab" id="tab_1_55">
+                                                <div class="portlet-body">
+                                                </div>
+                                            </div>
+                                            <!--tab-pane-->
+                                        {% endif %}
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <!-- END PAGE CONTENT INNER -->
+            </div>
+        </div>
+        <!-- END PAGE CONTENT BODY -->
+        <!-- END CONTENT BODY -->
+    </div>
+
+{% endblock %}
+{% block footer %}
+    {#change password modal#}
+    <div class="modal fade" id="user-info-change-password" tabindex="-1" role="user-info-change-password" aria-hidden="true">
+        {{ render(controller('FOSUserBundle:ChangePassword:changePassword', {'request': app.request})) }}
+    </div>
+    {% if is_granted('PLAN_SUBSCRIPTION_ABILITY') %}
+        {# Stripe Payment Form modal#}
+        <div class="modal fade" id="stripePaymentForm" tabindex="-1" role="stripePaymentForm" aria-hidden="true">
+        </div>
+        <div class="modal fade" id="userDeactivateAcount" tabindex="-1" role="userDeactivateAcount" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                        <h4 class="modal-title">Are you sure you want to cancel your account?</h4>
+                    </div>
+                    <div class="form-body">
+                        <div class="modal-body">
+                            <div class="alert alert-danger">
+                                By performing this action your subscription will end starting from this moment.
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn red-soft confirmUserDeactivateAcount">Yes</button>
+                            <button type="button" class="btn dark grey-salt" data-dismiss="modal">NO</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
+{% block javascripts %}
+    {% if is_granted('PLAN_SUBSCRIPTION_ABILITY') %}
+        <script src="https://js.stripe.com/v3/"></script>
+    {% endif %}
+    <script>
+        {% if is_granted('PLAN_SUBSCRIPTION_ABILITY') %}
+            var stripe = Stripe('{{stripe_publish_key}}');
+        {% endif %}
+            var hasActivieSubscription = "{{is_granted("HAS_ACTIVE_SUBSCRIPTION")}}";
+    </script>
+    {% if is_granted('PLAN_SUBSCRIPTION_ABILITY') %}
+        <script type="text/javascript" src="{{ asset('bundles/app/js/subscription/functions.js') }}"></script>
+    {% endif %}
+    <script type="text/javascript" src="{{ asset('bundles/app/js/profile/show.js') }}"></script>
+    {% if is_granted('PLAN_SUBSCRIPTION_ABILITY') %}
+        <script type="text/javascript" src="{{ asset('bundles/app/js/subscription/billingInfo.js') }}"></script>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,108 @@
+{% trans_default_domain 'FOSUserBundle' %}
+{% form_theme form 'AppBundle:Form:errors.html.twig' %}
+
+<form action="{{ path('fos_user_profile_edit') }}" {{ form_enctype(form) }} method="POST" class="fos_user_profile_edit row" novalidate="">
+
+    <div class="col-md-3">
+        {#<label class="control-label">Image</label>#}
+        <div class="fileinput fileinput-new form-group {% if form.imageFile.vars.errors | length %}has-error{% endif %}" data-provides="fileinput">
+            <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"> 
+                {% if is_granted('ROLE_PREVIOUS_ADMIN') and app.session.has('originalUser')%}
+                    {% set originalUser = app.session.get('originalUser') %}
+                    {% if originalUser.image %}
+                        <img class="imageCreated" src="{{ asset('uploads/user-images/'~ originalUser.image)}}"/>
+                    {% endif %}
+                {% elseif app.user.image is defined and app.user.image is not null %}
+                    <img class="imageCreated" src="{{ asset('uploads/user-images/'~ app.user.image)}}"/>
+                {% endif%}
+
+            </div>
+            <div>
+                <span class="btn green btn-outline btn-file">
+                    <span class="fileinput-new"> Select image </span>
+                    <span class="fileinput-exists"> Change </span>
+                    <input id="fos_user_profile_form_imageFile_file" name="fos_user_profile_form[imageFile]" type="file">     
+                </span>
+
+            </div>
+            <span class="help-block font-red">
+                {{ form_errors(form.imageFile) }}
+            </span>
+        </div>
+    </div>
+    <div class="col-md-9">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group {% if form.firstName.vars.errors | length %}has-error{% endif %}">
+                    <label class="control-label">First Name <span class="required" aria-required="true"> * </span></label>
+                    {{ form_widget(form.firstName, { 'attr': {'class': 'form-control'} }) }}
+                    {{ form_errors(form.firstName) }}
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group {% if form.lastName.vars.errors | length %}has-error{% endif %}">
+                    <label class="control-label">Last Name <span class="required" aria-required="true"> * </span></label>
+                    {{ form_widget(form.lastName, { 'attr': {'class': 'form-control'} }) }}
+                    {{ form_errors(form.lastName) }}
+                </div>
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group {% if form.email.vars.errors | length %}has-error{% endif %}">
+                    <label class="control-label">Email<span class="required" aria-required="true"> * </span></label>
+                    {{ form_widget(form.email, { 'attr': {'class': 'form-control'} }) }}
+                    {{ form_errors(form.email) }}
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group {% if form.currency.vars.errors | length %}has-error{% endif %}">
+                    <label class="control-label">Currency<span class="required" aria-required="true"> * </span></label>
+                    {{ form_widget(form.currency, { 'attr': {'class': 'form-control'} }) }}
+                    {{ form_errors(form.currency) }}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group {% if form.timezone.vars.errors | length %}has-error{% endif %}">
+                    <label class="control-label">Timezone<span class="required" aria-required="true"> * </span></label>
+                    {{ form_widget(form.timezone, { 'attr': {'class': 'form-control'} }) }}
+                    {{ form_errors(form.timezone) }}
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group  {% if form.businessType.vars.errors | length %}has-error{% endif %}"  {% if is_granted('ROLE_PREVIOUS_ADMIN') %}style="display: none;"{% endif %}>
+                    <label class="control-label">Company <span class="required" aria-required="true"> * </span></label>
+                    {{ form_widget(form.businessType, { 'attr': {'class': 'form-control','value':app.user.businessType} }) }}
+                    {{ form_errors(form.businessType) }}
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group" >
+                    <div class="input-group">
+                        <input type="text" class="form-control" readonly="" value="********">
+                        <span class="input-group-btn">
+                            <a data-toggle="modal" href="#user-info-change-password" class="btn blue-hoki  font-white change-password-popup">
+                                <i class="icon-note font-white"></i> Change Password
+                            </a>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group text-right">
+                    <input id="submit_edit_user_personal_info" type="button" class="btn  btn-success" value="Save Changes" />
+                </div>
+            </div>
+        </div>
+   
+
+    </div>
+    {{ form_row(form._token) }}
+   
+</form>

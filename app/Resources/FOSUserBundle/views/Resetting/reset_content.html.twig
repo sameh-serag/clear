@@ -1,0 +1,39 @@
+{% trans_default_domain 'FOSUserBundle' %}
+{% form_theme form 'AppBundle:Form:errors.html.twig' %}
+<form id="form-reset-pwd" action="{{ path('fos_user_resetting_reset', {'token': token}) }}" {{ form_enctype(form) }} method="POST" class="fos_user_resetting_reset" autocomplete="off">
+    <h3 class="form-title font-blue">Reset Password</h3>
+    {% if form.plainPassword.first.vars.errors | length %}   
+        <div class="alert alert-danger">
+            <button class="close" data-close="alert"></button>
+            <span>{{ form_errors(form.plainPassword.first )}}</span>
+        </div>
+    {% endif %}
+<input style="display:none">
+    <div class="form-group">
+   <input id="fos_user_resetting_form_plainPassword_first" 
+          name="fos_user_resetting_form[plainPassword][first]"  class="form-control"
+          placeholder="New password" readonly  
+     onfocus="$(this).removeAttr('readonly');" type="password"> 
+    </div>
+
+    <div class="form-group">    
+    <input id="fos_user_resetting_form_plainPassword_second" name="fos_user_resetting_form[plainPassword][second]"  class="form-control" placeholder="Repeat new password" type="password">
+    </div>
+
+
+
+    <button id="validate-login" type="submit" value="Reset password" class="btn blue  action submit uppercase center-block" style="display: block;">
+        <span>Reset password</span>
+    </button>
+    {{ form_row(form._token) }}
+</form>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+<script>
+    $('form').submit(function () {
+        $(this).find('button[type=submit]').prop('disabled', true);
+    });
+
+
+</script>

@@ -1,0 +1,31 @@
+{% trans_default_domain 'FOSUserBundle' %}
+
+<form action="{{ path('fos_user_resetting_send_email') }}" method="POST" class="fos_user_resetting_request">
+    <h3 class="form-title font-blue">Forget Password</h3>
+
+    {% if invalid_username is defined %}
+        <div class="alert alert-danger">
+            <button class="close" data-close="alert"></button>
+            {% if invalid_username | length >0 %}
+                <span>The email address {{invalid_username}} does not exist.</span>
+            {% else %}
+                <span>Please enter Email.</span>
+            {% endif %}
+        </div>
+
+    {% endif %}
+    <div class="form-group">
+        <input class="form-control form-control-solid placeholder-no-fix"  autocomplete="off" placeholder="Email" type="text" id="username" name="username"  />
+    </div>
+    <div class="form-actions">    
+        <input  class="btn blue uppercase center-block" type="submit" value="{{ 'resetting.request.submit'|trans }}" />
+
+    </div>
+</form>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+<script>
+    $('form').submit(function () {
+        $(this).find('input[type=submit]').prop('disabled', true);
+    });
+</script>
